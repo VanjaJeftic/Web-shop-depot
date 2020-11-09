@@ -18,7 +18,7 @@ class CartsController < ApplicationController
 
   # GET /carts/1/edit
   def edit
-
+    @cart = Cart.find(params[:id])
   end
 
   # POST /carts
@@ -40,6 +40,7 @@ class CartsController < ApplicationController
   # PATCH/PUT /carts/1
   # PATCH/PUT /carts/1.json
   def update
+    @cart = Cart.find(params[:id])
     respond_to do |format|
       if @cart.update(cart_params)
         format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
