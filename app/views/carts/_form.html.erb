@@ -1,23 +1,17 @@
-<% if notice %>
-  <aside id="notice"><%= notice %></aside>
-<% end %>
-<h1>Your Pragmatic Catalog</h1>
-<ul class="catalog">
-  <% cache @products do %>
-    <% @products.each do |product| %>
-      <% cache product do %>
-        <li>
-          <%= image_tag(product.image_url) %>
-          <h2><%= product.title %></h2>
-          <p>
-            <%= sanitize(product.description) %>
-          </p>
-          <div class="price">
-            <%= number_to_currency(product.price) %>
-            <%= button_to 'Add to Cart', line_items_path(product_id: product) %>
-          </div>
-        </li>
-      <% end %>
-    <% end %>
+<%= form_with(model: cart, local: true) do |form| %>
+  <% if cart.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(cart.errors.count, "error") %> prohibited this cart from being saved:</h2>
+
+      <ul>
+        <% cart.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
-</ul>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
