@@ -67,4 +67,6 @@ Rails.application.configure do
     config.action_controller.perform_caching = true
     config.cache_store = :memory_store
   end
+
+  config.action_cable.disable_request_forgery_protection = true
 end

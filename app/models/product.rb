@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Product < ApplicationRecord
+  has_many :line_items
+  has_many :orders, through: :line_items
   validates :title, :description, :image_url, presence: true
   validates :title, length: {
     minimum: 10, maximum: 30
@@ -12,7 +14,6 @@ class Product < ApplicationRecord
     message: 'must be a URL for GIF, JPG or PNG image'
   }
 
-  has_many :line_items
   before_destroy :ensure_not_referenced_by_any_line_item
 
   private
