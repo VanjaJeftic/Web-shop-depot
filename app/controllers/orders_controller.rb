@@ -1,8 +1,10 @@
 class OrdersController < ApplicationController
   include CurrentCart
-  before_action :set_cart, only: [:new, :create]
+
+  before_action :set_cart, only: %i[new create]
   before_action :ensure_cart_isnt_empty, only: :new
-  before_action :set_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_order, only: %i[show edit update destroy]
+  skip_before_action :authorize, only: %i[new create]
 
   # GET /orders
   # GET /orders.json
@@ -12,8 +14,7 @@ class OrdersController < ApplicationController
 
   # GET /orders/1
   # GET /orders/1.json
-  def show
-  end
+  def show; end
 
   # GET /orders/new
   def new
@@ -21,8 +22,7 @@ class OrdersController < ApplicationController
   end
 
   # GET /orders/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /orders
   # POST /orders.json
@@ -34,15 +34,21 @@ class OrdersController < ApplicationController
       if @order.save
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
-        ChargeOrderJob.perform_later(@order,pay_type_params.to_h)
-        format.html { redirect_to store_index_url, notice:
-            'Thank you for your order.' }
-        format.json { render :show, status: :created,
-                             location: @order }
+        ChargeOrderJob.perform_later(@order, pay_type_params.to_h)
+        format.html do
+          redirect_to store_index_url, notice:
+            'Thank you for your order.'
+        end
+        format.json do
+          render :show, status: :created,
+                        location: @order
+        end
       else
         format.html { render :new }
-        format.json { render json: @order.errors,
-                             status: :unprocessable_entity }
+        format.json do
+          render json: @order.errors,
+                 status: :unprocessable_entity
+        end
       end
     end
   end
@@ -72,11 +78,11 @@ class OrdersController < ApplicationController
   end
 
   def pay_type_params
-    if order_params[:pay_type] == "Credit card"
+    if order_params[:pay_type] == 'Credit card'
       params.require(:order).permit(:credit_card_number, :expiration_date)
-    elsif order_params[:pay_type] == "Check"
+    elsif order_params[:pay_type] == 'Check'
       params.require(:order).permit(:routing_number, :account_number)
-    elsif order_params[:pay_type] == "Purchase order"
+    elsif order_params[:pay_type] == 'Purchase order'
       params.require(:order).permit(:po_number)
     else
       {}
@@ -84,19 +90,18 @@ class OrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_order
-      @order = Order.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def order_params
-      params.require(:order).permit(:name, :address, :email, :pay_type)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_order
+    @order = Order.find(params[:id])
+  end
 
-    def ensure_cart_isnt_empty
-      if @cart.line_items.empty?
-        redirect_to store_index_url, notice: 'Your cart is empty'
-      end
-    end
+  # Only allow a list of trusted parameters through.
+  def order_params
+    params.require(:order).permit(:name, :address, :email, :pay_type)
+  end
+
+  def ensure_cart_isnt_empty
+    redirect_to store_index_url, notice: 'Your cart is empty' if @cart.line_items.empty?
+  end
 end
