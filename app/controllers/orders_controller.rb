@@ -33,15 +33,21 @@ class OrdersController < ApplicationController
       if @order.save
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
-        ChargeOrderJob.perform_later(@order,pay_type_params.to_h)
-        format.html { redirect_to store_index_url(locale: I18n.locale),
-                                  notice: I18n.t('.thanks') }
-        format.json { render :show, status: :created,
-                             location: @order }
+        ChargeOrderJob.perform_later(@order, pay_type_params.to_h)
+        format.html do
+          redirect_to store_index_url(locale: I18n.locale),
+                      notice: I18n.t('.thanks')
+        end
+        format.json do
+          render :show, status: :created,
+                        location: @order
+        end
       else
         format.html { render :new }
-        format.json { render json: @order.errors,
-                             status: :unprocessable_entity }
+        format.json do
+          render json: @order.errors,
+                 status: :unprocessable_entity
+        end
       end
     end
   end

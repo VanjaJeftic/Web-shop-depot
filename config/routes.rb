@@ -7,13 +7,13 @@ Rails.application.routes.draw do
     post 'login' => :create
     delete 'logout' => :destroy
   end
-  get 'sessions/create'
-  get 'sessions/destroy'
 
   resources :users
   resources :products do
     get :who_bought, on: :member
   end
+
+  resources :support_requests, only: %i[index update]
 
   scope '(:locale)' do
     resources :orders
