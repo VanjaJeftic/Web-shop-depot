@@ -28,7 +28,7 @@ class UsersController < ApplicationController
       if @user.save
         format.html do
           redirect_to users_url,
-                      notice: "User #{@user.name} was successfully created."
+                      notice: "User was successfully created"
         end
         format.json { render :show, status: :created, location: @user }
       else
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html do
           redirect_to users_url,
-                      notice: "User #{@user.name} was successfully updated."
+                      notice: "User was successfully updated"
         end
         format.json { render :show, status: :ok, location: @user }
       else
@@ -68,7 +68,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html do
         redirect_to users_url,
-                    notice: 'User was successfully destroyed.'
+                    notice: "User was successfully destroyed"
       end
       format.json { head :no_content }
     end
