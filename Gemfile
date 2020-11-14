@@ -60,3 +60,5 @@ gem 'parser', '2.7.2.0'
 gem 'rspec'
 gem 'rubocop'
 gem 'tzinfo'
+
+gem 'i18n-js'
