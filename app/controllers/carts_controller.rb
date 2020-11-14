@@ -1,7 +1,8 @@
 class CartsController < ApplicationController
-  skip_before_action :authorize, only: [:create, :update, :destroy]
   before_action :set_cart, only: %i[show edit update destroy]
+  skip_before_action :authorize, only: %i[create update destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :invalid_cart
+
   # GET /carts
   # GET /carts.json
   def index
@@ -18,9 +19,7 @@ class CartsController < ApplicationController
   end
 
   # GET /carts/1/edit
-  def edit
-    @cart = Cart.find(params[:id])
-  end
+  def edit; end
 
   # POST /carts
   # POST /carts.json
@@ -41,7 +40,6 @@ class CartsController < ApplicationController
   # PATCH/PUT /carts/1
   # PATCH/PUT /carts/1.json
   def update
-    @cart = Cart.find(params[:id])
     respond_to do |format|
       if @cart.update(cart_params)
         format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
@@ -58,8 +56,12 @@ class CartsController < ApplicationController
   def destroy
     @cart.destroy if @cart.id == session[:cart_id]
     session[:cart_id] = nil
+
     respond_to do |format|
-      format.html { redirect_to store_index_url, notice: 'Cart was successfully destroyed.' }
+      format.html do
+        redirect_to store_index_url,
+                    notice: 'Your cart is currently empty'
+      end
       format.json { head :no_content }
     end
   end

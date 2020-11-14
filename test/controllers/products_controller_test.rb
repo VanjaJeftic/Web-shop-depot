@@ -48,10 +48,20 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to products_url
   end
 
-  test "should destroy product" do
+  test 'should destroy product' do
     assert_difference('Product.count', -1) do
       delete product_url(@product)
     end
     assert_redirected_to products_url
+  end
+
+  def who_bought
+    @product = Product.find(params[:id])
+    @latest_order = @product.orders.order(:updated_at).last
+    if stale?(@latest_order)
+      respond_to do |format|
+        format.atom
+      end
+    end
   end
 end

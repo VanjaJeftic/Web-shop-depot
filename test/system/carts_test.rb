@@ -10,7 +10,6 @@ class CartsTest < ApplicationSystemTestCase
     assert_selector 'h1', text: 'Carts'
   end
 
-
   test 'destroying a Cart' do
     visit carts_url
     page.accept_confirm do
