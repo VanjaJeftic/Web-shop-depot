@@ -29,7 +29,6 @@ class UsersTest < ApplicationSystemTestCase
     fill_in 'Password', with: 'secret'
     fill_in 'Password confirmation', with: 'secret'
     click_on 'Update User'
-
   end
 
   test 'destroying a User' do
@@ -37,6 +36,5 @@ class UsersTest < ApplicationSystemTestCase
     page.accept_confirm do
       click_on 'Destroy', match: :first
     end
-
   end
 end

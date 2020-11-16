@@ -60,7 +60,7 @@ class CartsController < ApplicationController
     respond_to do |format|
       format.html do
         redirect_to store_index_url,
-                    notice: "Cart was successfully destroyed"
+                    notice: 'Cart was successfully destroyed'
       end
       format.json { head :no_content }
     end
